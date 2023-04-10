@@ -49,13 +49,22 @@ def buscar_clima_distribuido(ciudades):
 
 
 # Ejemplo de uso
-ciudades = ['Madrid', 'Londres', 'Nueva York','Santiago,cl']
+#ciudades = ['Madrid', 'Londres', 'Los Angeles,US','Santiago,CL','Florencia,it','Berlin,DE','Tokio,jp','Roma,it','Paris,fr','Lima,pe','Buenos Aires,ar','Sao Paulo,br','Mexico,mx','Toronto,ca','Sydney,au','Hong Kong,hk','Dubai,ae','Moscu,ru','Seul,kr','Singapur,sg','Bangkok,th','Taipei,tw','Jakarta,id','Pekin,cn','Shanghai,cn','Delhi,in','Mumbai,in','Kolkata,in','Karachi,pk','Istambul,tr','Riyadh,sa','Cairo,eg','Johannesburgo,za','Lagos,ng','Kinshasa,cd','Lima,pe','Buenos Aires,ar','Sao Paulo,br','Mexico,mx','Toronto,ca','Sydney,au','Hong Kong,hk','Dubai,ae','Moscu,ru','Seul,kr','Singapur,sg','Bangkok,th','Taipei,tw','Jakarta,id','Pekin,cn','Shanghai,cn','Delhi,in','Mumbai,in','Kolkata,in','Karachi,pk','Istambul,tr','Riyadh,sa','Cairo,eg','Johannesburgo,za','Lagos,ng','Kinshasa,cd']
+ciudades = ['Madrid', 'Londres', 'Los Angeles,US','Santiago,CL','Florencia,IT','Berlin,DE','Salt Lake County, US']
 resultados = buscar_clima_distribuido(ciudades)
 
 # Imprimimos los resultados
 for ciudad, datos_clima in resultados.items():
     print(f'Clima en {ciudad}:')
-    print('Temperatura:', int(datos_clima['main']['temp']-273.15),'ºC')
+    print('Temperatura:', datos_clima['main']['temp'],'K')
+    print('Temperatura:', round(datos_clima['main']['temp']-273.15, 2),'ºC')
     print('Descripción:', datos_clima['weather'][0]['description'])
+    print('Humedad:', datos_clima['main']['humidity'],'%')
+    print('Presión:', datos_clima['main']['pressure'],'hPa')
+    print('Viento:', datos_clima['wind']['speed'],'m/s')
+    print('País:', datos_clima['sys']['country'])
+    print('Coiudad:', datos_clima['name'])
+
+
     print('---')
 
