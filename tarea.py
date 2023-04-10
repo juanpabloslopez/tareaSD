@@ -56,6 +56,6 @@ resultados = buscar_clima_distribuido(ciudades)
 for ciudad, datos_clima in resultados.items():
     print(f'Clima en {ciudad}:')
     print('Temperatura:', datos_clima['main']['temp'])
-    print('Descripción:', datos_clima['weather'][0]['description'])
+    print('Temperatura:', int(datos_clima['main']['temp']-273.15),'ºC')
     print('---')
 
