@@ -49,7 +49,7 @@ def buscar_clima_distribuido(ciudades):
 
 
 # Ejemplo de uso
-ciudades = ['Madrid', 'Londres', 'Nueva York']
+ciudades = ['Madrid', 'Londres', 'Nueva York','Santiago,cl']
 resultados = buscar_clima_distribuido(ciudades)
 
 # Imprimimos los resultados
