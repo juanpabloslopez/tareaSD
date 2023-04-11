@@ -37,11 +37,11 @@ def handle_user_query(user_id, category=None):
     """
     questions = search_trivia_questions(category)
     # Realizar acciones con las preguntas encontradas, como mostrarlas al usuario o procesarlas de alguna manera
-    print(f'Usuario {user_id}: Preguntas encontradas: {questions}')
+    print(f'Usuario {user_id}: Preguntas encontradas: {questions} \n')
 
 # Crear una lista de usuarios y categorías de consulta
 users = ['Usuario1', 'Usuario2', 'Usuario3']
-categories = ['9', '18', '21']  # Categorías de las preguntas de trivia (9: General Knowledge, 18: Science, 21: Sports)
+categories = ['9', '18', '11']  # Categorías de las preguntas de trivia (9: General Knowledge, 18: Science, 21: Sports)
 
 # Realizar consultas de los usuarios en hilos separados
 threads = []
