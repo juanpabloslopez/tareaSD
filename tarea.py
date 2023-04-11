@@ -1,54 +1,46 @@
 import requests
-from concurrent.futures import ThreadPoolExecutor
+import threading
 
-# Clave de API de OpenWeather
-API_KEY = '2b1fd2d7f77ccf1b7de9b441571b39b8'
+class OpenTriviaDatabase:
+    def __init__(self):
+        self.base_url = 'https://opentdb.com/api.php?amount=10&type=multiple'
 
-# URL base de la API de OpenWeather
-BASE_URL = 'https://api.openweathermap.org/data/2.5/weather'
+    def get_trivia_questions(self, category=None):
+        """
+        Obtiene preguntas de trivia de la API de Open Trivia Database.
+        :param category: Categoría de las preguntas (opcional).
+        :return: Lista de preguntas de trivia.
+        """
+        url = self.base_url
+        if category:
+            url += f'&category={category}'
 
+        response = requests.get(url)
+        trivia = response.json()
+        return trivia['results']
 
-def buscar_clima(ciudad):
+def search_trivia_questions(category=None):
     """
-    Función que realiza la búsqueda del clima en una ciudad dada utilizando la API de OpenWeather.
-
-    :param ciudad: Nombre de la ciudad para la búsqueda del clima.
-    :return: Diccionario con los datos del clima de la ciudad.
+    Realiza una búsqueda de preguntas de trivia en la API de Open Trivia Database.
+    :param category: Categoría de las preguntas (opcional).
+    :return: Lista de preguntas de trivia encontradas.
     """
-    parametros = {
-        'q': ciudad,
-        'appid': API_KEY
-    }
-    respuesta = requests.get(BASE_URL, params=parametros)
-    datos_clima = respuesta.json()
-    return datos_clima
+    trivia_db = OpenTriviaDatabase()
+    questions = trivia_db.get_trivia_questions(category)
+    return questions
 
-
-def buscar_clima_distribuido(ciudades):
+def handle_user_query(user_id, category=None):
     """
-    Función que realiza la búsqueda del clima en varias ciudades de forma distribuida.
-
-    :param ciudades: Lista de nombres de ciudades para la búsqueda del clima.
-    :return: Diccionario con los datos del clima de todas las ciudades.
+    Maneja la consulta de un usuario específico.
+    :param user_id: ID del usuario.
+    :param category: Categoría de las preguntas de trivia (opcional).
     """
-    resultados = {}
-    with ThreadPoolExecutor() as executor:
-        # Utilizamos un ThreadPoolExecutor para manejar las consultas de múltiples usuarios simultáneamente
-        # en hilos separados
-        futures = [executor.submit(buscar_clima, ciudad) for ciudad in ciudades]
-
-        # Esperamos a que todas las consultas finalicen y obtenemos los resultados
-        for ciudad, futuro in zip(ciudades, futures):
-            try:
-                datos_clima = futuro.result()
-                resultados[ciudad] = datos_clima
-            except Exception as e:
-                print(f'Error al buscar clima en {ciudad}: {e}')
-
-    return resultados
-
+    questions = search_trivia_questions(category)
+    # Realizar acciones con las preguntas encontradas, como mostrarlas al usuario o procesarlas de alguna manera
+    print(f'Usuario {user_id}: Preguntas encontradas: {questions}')
 
 # Ejemplo de uso
+<<<<<<< HEAD
 #ciudades = ['Madrid', 'Londres', 'Los Angeles,US','Santiago,CL','Florencia,it','Berlin,DE','Tokio,jp','Roma,it','Paris,fr','Lima,pe','Buenos Aires,ar','Sao Paulo,br','Mexico,mx','Toronto,ca','Sydney,au','Hong Kong,hk','Dubai,ae','Moscu,ru','Seul,kr','Singapur,sg','Bangkok,th','Taipei,tw','Jakarta,id','Pekin,cn','Shanghai,cn','Delhi,in','Mumbai,in','Kolkata,in','Karachi,pk','Istambul,tr','Riyadh,sa','Cairo,eg','Johannesburgo,za','Lagos,ng','Kinshasa,cd','Lima,pe','Buenos Aires,ar','Sao Paulo,br','Mexico,mx','Toronto,ca','Sydney,au','Hong Kong,hk','Dubai,ae','Moscu,ru','Seul,kr','Singapur,sg','Bangkok,th','Taipei,tw','Jakarta,id','Pekin,cn','Shanghai,cn','Delhi,in','Mumbai,in','Kolkata,in','Karachi,pk','Istambul,tr','Riyadh,sa','Cairo,eg','Johannesburgo,za','Lagos,ng','Kinshasa,cd']
 ciudades = ['Madrid', 'Londres', 'Los Angeles,US','Santiago,CL','Florencia,IT','Berlin,DE','Salt Lake County, US']
 resultados = buscar_clima_distribuido(ciudades)
@@ -67,4 +59,22 @@ for ciudad, datos_clima in resultados.items():
 
 
     print('---')
+=======
+# Crear una lista de usuarios y categorías de consulta
+users = ['Usuario1', 'Usuario2', 'Usuario3']
+categories = ['9', '18', '21']  # Categorías de las preguntas de trivia (9: General Knowledge, 18: Science, 21: Sports)
+
+# Realizar consultas de los usuarios en hilos separados
+threads = []
+for i, user in enumerate(users):
+    category = categories[i % len(categories)]  # Seleccionar una categoría para cada usuario
+    thread = threading.Thread(target=handle_user_query, args=(user, category))
+    thread.start()
+    threads.append(thread)
+
+# Esperar a que todos los hilos terminen
+for thread in threads:
+    thread.join()
+
+>>>>>>> 33f23d5 (modificación del código para la API de OpenTriviaDatabase)
 
