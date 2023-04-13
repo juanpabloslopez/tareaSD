@@ -1,0 +1,7 @@
+docker compose up 
+(levanta el servidor)
+
+docker exec -it id bash
+
+root@id:/data# redis-cli
+127.0.0.1:puerto>
