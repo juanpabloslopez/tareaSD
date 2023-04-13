@@ -1,6 +1,8 @@
 docker compose up 
 (levanta el servidor)
 
+docker ps
+
 docker exec -it id bash
 
 root@id:/data# redis-cli
