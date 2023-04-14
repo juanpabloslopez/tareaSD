@@ -4,7 +4,7 @@ services:
   redis1:
     image: 'redis:6.2.6'
     container_name: 'redis1'
-    command: ["redis-server", "--save", "60", "1", "--appendonly", "yes", "--maxmemory", "1g", "--maxmemory-policy", "allkeys-lru"]
+    command: ["redis-server", "--save", "60", "1", "--appendonly", "yes", "--maxmemory", "1g", "--maxmemory-policy", "allkeys-lfu"]
     ports:
       - '6381:6379'  # Puerto personalizado para el servidor Redis1
     networks:
@@ -13,7 +13,7 @@ services:
   redis2:
     image: 'redis:6.2.6'
     container_name: 'redis2'
-    command: ["redis-server", "--save", "60", "1", "--appendonly", "yes", "--maxmemory", "1g", "--maxmemory-policy", "allkeys-lru"]
+    command: ["redis-server", "--save", "60", "1", "--appendonly", "yes", "--maxmemory", "1g", "--maxmemory-policy", "allkeys-lfu"]
     ports:
       - '6382:6379'  # Puerto personalizado para el servidor Redis2
     networks:
@@ -22,7 +22,7 @@ services:
   redis3:
     image: 'redis:6.2.6'
     container_name: 'redis3'
-    command: ["redis-server", "--save", "60", "1", "--appendonly", "yes", "--maxmemory", "1g", "--maxmemory-policy", "allkeys-lru"]
+    command: ["redis-server", "--save", "60", "1", "--appendonly", "yes", "--maxmemory", "1g", "--maxmemory-policy", "allkeys-lfu"]
     ports:
       - '6383:6379'  # Puerto personalizado para el servidor Redis3
     networks:
