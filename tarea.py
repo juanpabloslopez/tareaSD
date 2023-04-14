@@ -3,6 +3,7 @@ import random
 import redis
 import json
 import time
+import matplotlib.pyplot as plt
 
 # inicio de tiempo
 Itime = time.time()
@@ -83,3 +84,8 @@ Ftime = time.time()
 
 Ttotal = Ftime-Itime
 print("Tiempo total: ", Ttotal)
+
+#archivo-salida.py
+f = open ('tiempos.txt','w')
+f.write(Ttotal)
+f.close()
