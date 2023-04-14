@@ -86,6 +86,7 @@ Ttotal = Ftime-Itime
 print("Tiempo total: ", Ttotal)
 
 #archivo-salida.py
-f = open ('tiempos.txt','w')
-f.write(Ttotal)
+f = open ('tiempos.txt','a')
+f.write(str(Ttotal))
+f.write("\n")
 f.close()
