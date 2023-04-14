@@ -1,5 +1,14 @@
 import requests
 import random
+import redis
+import requests
+import xml.etree.ElementTree as ET
+# import time
+
+r1 = redis.Redis(host='localhost', port=6381, decode_responses=True)
+r2 = redis.Redis(host='localhost', port=6382, decode_responses=True)
+r3 = redis.Redis(host='localhost', port=6383, decode_responses=True)
+
 
 # Leer los códigos de barras del archivo de texto codigos.txt
 with open("codigos.txt", "r") as f:
@@ -14,6 +23,20 @@ random_barcodes = random.choices(popular_barcodes, weights=[0.3, 0.3, 0.2, 0.1, 
 
 # Hacer una solicitud GET para cada uno de los códigos de barras seleccionados aleatoriamente
 for barcode in random_barcodes:
+    char_place = list(barcode)
+	
+    if(r1.exists(barcode) == 1):
+        print(r1.hgetall(barcode))
+        break
+
+    elif(r2.exists(barcode) == 1):
+        print(r2.hgetall(barcode))
+        break
+
+    elif(r3.exists(barcode) == 1):
+        print(r3.hgetall(barcode))
+        break
+
     url = f"https://world.openfoodfacts.org/api/v0/product/{barcode}.json"
     response = requests.get(url)
 
@@ -33,6 +56,10 @@ for barcode in random_barcodes:
             print("Category:", category)
             print("Ingredients:", ingredients)
             print("=" * 50)
+
+            # agregar a servidores en funcion de un filtro de modulo 3    
+
+
         else:
             print(f"Product not found for barcode: {barcode}")
     else:
