@@ -20,19 +20,18 @@ random_barcodes = random.choices(popular_barcodes, weights=[0.3, 0.3, 0.2, 0.1, 
 
 # Hacer una solicitud GET para cada uno de los códigos de barras seleccionados aleatoriamente
 for barcode in random_barcodes:
-    char_place = list(barcode)
 
     if r1.exists(barcode) == 1:
-        print(r1.hgetall(barcode))
-        break
+        print(barcode)
+        print(r1.get(barcode))
 
     elif r2.exists(barcode) == 1:
-        print(r2.hgetall(barcode))
-        break
+        print(barcode)
+        print(r2.get(barcode))
 
     elif r3.exists(barcode) == 1:
-        print(r3.hgetall(barcode))
-        break
+        print(barcode)
+        print(r3.get(barcode))
 
     url = f"https://world.openfoodfacts.org/api/v0/product/{barcode}.json"
     response = requests.get(url)
