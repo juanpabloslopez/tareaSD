@@ -2,6 +2,10 @@ import requests
 import random
 import redis
 import json
+import time
+
+# inicio de tiempo
+Itime = time.time()
 
 r1 = redis.Redis(host='localhost', port=6381, decode_responses=True)
 r2 = redis.Redis(host='localhost', port=6382, decode_responses=True)
@@ -33,44 +37,49 @@ for barcode in random_barcodes:
         print(barcode)
         print(r3.get(barcode))
 
-    url = f"https://world.openfoodfacts.org/api/v0/product/{barcode}.json"
-    response = requests.get(url)
-
-    if response.status_code == 200:
-        data = response.json()
-        if "product" in data:
-            product = data["product"]
-            name = product.get("product_name", "Unknown")
-            brand = product.get("brands", "Unknown")
-            quantity = product.get("quantity", "Unknown")
-            category = product.get("categories", "Unknown")
-            ingredients = product.get("ingredients_text", "Unknown")
-
-            print("Product Name:", name)
-            print("Brand:", brand)
-            print("Quantity:", quantity)
-            print("Category:", category)
-            print("Ingredients:", ingredients)
-            print("=" * 50)
-
-            # Convertir el resultado a un diccionario y almacenarlo en Redis
-            result = {
-                "product_name": name,
-                "brand": brand,
-                "quantity": quantity,
-                "category": category,
-                "ingredients": ingredients
-            }
-            result_json = json.dumps(result)  # Convertir a string en formato JSON
-            if int(barcode[-1]) % 3 == 0:
-                r1.set(barcode, result_json)
-            elif int(barcode[-1]) % 3 == 1:
-                r2.set(barcode, result_json)
-            else:
-                r3.set(barcode, result_json)
-
-        else:
-            print(f"Product not found for barcode: {barcode}")
     else:
-        print(f"Error making request for barcode: {barcode}, error code: {response.status_code}")
+        url = f"https://world.openfoodfacts.org/api/v0/product/{barcode}.json"
+        response = requests.get(url)
 
+        if response.status_code == 200:
+            data = response.json()
+            if "product" in data:
+                product = data["product"]
+                name = product.get("product_name", "unknown")
+                brand = product.get("brands", "unknown")
+                quantity = product.get("quantity", "unknown")
+                category = product.get("categories", "unknown")
+                ingredients = product.get("ingredients_text", "unknown")
+
+                print("product name:", name)
+                print("brand:", brand)
+                print("quantity:", quantity)
+                print("category:", category)
+                print("ingredients:", ingredients)
+                print("=" * 50)
+
+                # convertir el resultado a un diccionario y almacenarlo en redis
+                result = {
+                    "product_name": name,
+                    "brand": brand,
+                    "quantity": quantity,
+                    "category": category,
+                    "ingredients": ingredients
+                }
+                result_json = json.dumps(result)  # convertir a string en formato json
+                if int(barcode[-1]) % 3 == 0:
+                    r1.set(barcode, result_json)
+                elif int(barcode[-1]) % 3 == 1:
+                    r2.set(barcode, result_json)
+                else:
+                    r3.set(barcode, result_json)
+
+            else:
+                print(f"product not found for barcode: {barcode}")
+        else:
+            print(f"Error making request for barcode: {barcode}, error code: {response.status_code}")
+
+Ftime = time.time()
+
+Ttotal = Ftime-Itime
+print("Tiempo total: ", Ttotal)
