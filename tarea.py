@@ -1,14 +1,11 @@
 import requests
 import random
 import redis
-import requests
-import xml.etree.ElementTree as ET
-# import time
+import json
 
 r1 = redis.Redis(host='localhost', port=6381, decode_responses=True)
 r2 = redis.Redis(host='localhost', port=6382, decode_responses=True)
 r3 = redis.Redis(host='localhost', port=6383, decode_responses=True)
-
 
 # Leer los códigos de barras del archivo de texto codigos.txt
 with open("codigos.txt", "r") as f:
@@ -24,16 +21,16 @@ random_barcodes = random.choices(popular_barcodes, weights=[0.3, 0.3, 0.2, 0.1, 
 # Hacer una solicitud GET para cada uno de los códigos de barras seleccionados aleatoriamente
 for barcode in random_barcodes:
     char_place = list(barcode)
-	
-    if(r1.exists(barcode) == 1):
+
+    if r1.exists(barcode) == 1:
         print(r1.hgetall(barcode))
         break
 
-    elif(r2.exists(barcode) == 1):
+    elif r2.exists(barcode) == 1:
         print(r2.hgetall(barcode))
         break
 
-    elif(r3.exists(barcode) == 1):
+    elif r3.exists(barcode) == 1:
         print(r3.hgetall(barcode))
         break
 
@@ -57,10 +54,24 @@ for barcode in random_barcodes:
             print("Ingredients:", ingredients)
             print("=" * 50)
 
-            # agregar a servidores en funcion de un filtro de modulo 3    
-
+            # Convertir el resultado a un diccionario y almacenarlo en Redis
+            result = {
+                "product_name": name,
+                "brand": brand,
+                "quantity": quantity,
+                "category": category,
+                "ingredients": ingredients
+            }
+            result_json = json.dumps(result)  # Convertir a string en formato JSON
+            if int(barcode[-1]) % 3 == 0:
+                r1.set(barcode, result_json)
+            elif int(barcode[-1]) % 3 == 1:
+                r2.set(barcode, result_json)
+            else:
+                r3.set(barcode, result_json)
 
         else:
             print(f"Product not found for barcode: {barcode}")
     else:
         print(f"Error making request for barcode: {barcode}, error code: {response.status_code}")
+
