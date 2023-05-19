@@ -1,62 +1,42 @@
-import pika
-from confluent_kafka import Producer
-import json
 import random
-import time
-import threading
+import string
+import pika
+
+from confluent_kafka import Producer
+import random
 
 # Configuración de RabbitMQ
-rabbitmq_connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
-rabbitmq_channel = rabbitmq_connection.channel()
-rabbitmq_channel.queue_declare(queue='rabbitmq_queue')
+RABBITMQ_HOST = 'localhost'
+RABBITMQ_PORT = 5672
+RABBITMQ_USER = 'admin'
+RABBITMQ_PASSWORD = 'admin'
+RABBITMQ_QUEUE = 'my_queue'
+
 
 # Configuración de Kafka
-kafka_conf = {'bootstrap.servers': 'localhost:9092'}
-kafka_producer = Producer(kafka_conf)
+# bootstrap_servers = local
 
-# Lista de palabras aleatorias
-words = ['apple', 'banana', 'orange', 'grape', 'pineapple', 'watermelon', 'mango', 'strawberry']
+# Generar palabra aleatoria
+def generar_palabra_aleatoria():
+    longitud = random.randint(5, 10)
+    palabra = ''.join(random.choices(string.ascii_letters, k=longitud))
+    return palabra
 
-# Función para enviar mensajes de los dispositivos
-def send_messages(device_id, delta_t):
-    while True:
-        word = random.choice(words)
-        timestamp = int(time.time())
+# Enviar palabra aleatoria a RabbitMQ
+def enviar_rabbitmq(palabra):
+    credentials = pika.PlainCredentials(RABBITMQ_USER, RABBITMQ_PASSWORD)
+    parameters = pika.ConnectionParameters(host=RABBITMQ_HOST, port=RABBITMQ_PORT, credentials=credentials)
+    connection = pika.BlockingConnection(parameters)
+    channel = connection.channel()
+    channel.queue_declare(queue=RABBITMQ_QUEUE)
+    channel.basic_publish(exchange='', routing_key=RABBITMQ_QUEUE, body=palabra)
+    print(f"Palabra '{palabra}' enviada a RabbitMQ")
+    connection.close()
 
-        # Envío a RabbitMQ
-        rabbitmq_message = {
-            'timestamp': timestamp,
-            'word': word
-        }
-        rabbitmq_channel.basic_publish(exchange='', routing_key='rabbitmq_queue', body=json.dumps(rabbitmq_message))
+# Generar palabra aleatoria y enviarla a RabbitMQ
+def enviar_palabra_aleatoria():
+    palabra = generar_palabra_aleatoria()
+    enviar_rabbitmq(palabra)
 
-        # Envío a Kafka
-        kafka_message = {
-            'timestamp': timestamp,
-            'word': word
-        }
-        kafka_producer.produce(topic='kafka_topic', value=json.dumps(kafka_message))
-        kafka_producer.flush()
-
-        # Mostrar log en la consola
-        print(f"Device {device_id} sending: {json.dumps(rabbitmq_message)}")
-
-        time.sleep(delta_t)
-
-# Simulación de múltiples dispositivos IoT
-num_devices = 5  # Cantidad de dispositivos IoT
-delta_t = 2  # Tiempo entre cada envío de mensaje (segundos)
-
-# Crear y ejecutar los threads de los dispositivos
-threads = []
-for i in range(num_devices):
-    thread = threading.Thread(target=send_messages, args=(i+1, delta_t))
-    threads.append(thread)
-    thread.start()
-
-# Esperar a que todos los threads terminen
-for thread in threads:
-    thread.join()
-
-# Cerrar conexiones
-rabbitmq_connection.close()
+# Ejecutar el envío de la palabra aleatoria
+enviar_palabra_aleatoria()

@@ -2,3 +2,7 @@ sudo docker-compose exec -it id bash
 rabbitmqctl add_user admin admin
 rabbitmqctl set_user_tags admin administrator
 rabbitmqctl set_permissions -p / admin ".*" ".*" ".*"
+
+
+sudo docker exec -it kafka-broker-1 bash
+kafka-console-consumer --bootstrap-server kafka-broker-1:9092 --topic mi-topic --from-beginning
