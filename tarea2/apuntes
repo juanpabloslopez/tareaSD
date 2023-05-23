@@ -3,6 +3,6 @@ rabbitmqctl add_user admin admin
 rabbitmqctl set_user_tags admin administrator
 rabbitmqctl set_permissions -p / admin ".*" ".*" ".*"
 
-
+#Acceder al bash del docker
 sudo docker exec -it kafka-broker-1 bash
-kafka-console-consumer --bootstrap-server kafka-broker-1:9092 --topic mi-topic --from-beginning
+kafka-console-consumer --bootstrap-server kafka-broker-1:9092 --topic kafkin --from-beginning
