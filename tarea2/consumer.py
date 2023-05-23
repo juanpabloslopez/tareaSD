@@ -1,6 +1,7 @@
 import pika
 from confluent_kafka import Consumer, KafkaException
 
+
 # Configuración de RabbitMQ
 RABBITMQ_HOST = 'localhost'
 RABBITMQ_PORT = 5672
@@ -58,6 +59,7 @@ def consumir_kafka():
                     break
 
             print(f"Mensaje recibido desde Kafka: {msg.value().decode('utf-8')}")
+            c.commit()
 
     except KeyboardInterrupt:
         pass
@@ -69,3 +71,4 @@ def consumir_kafka():
 # Consumir mensajes de RabbitMQ y Kafka en el mismo proceso
 consumir_rabbitmq()
 consumir_kafka()
+
