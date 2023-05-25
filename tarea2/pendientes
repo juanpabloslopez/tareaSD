@@ -1,4 +1,8 @@
-1) Formato JSON
-2) Threads
-3) Tiempo
-4) Consumers
+1) Formato JSON (Listoque)
+2) Threads (Listoque)
+3) Tiempo (Tambien?)
+4) Consumers (Listo)
+
+Parte 2:
+-> Escalabilidad
+-> Tolerancia a Fallos
