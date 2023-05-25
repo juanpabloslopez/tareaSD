@@ -1,5 +1,4 @@
 import pika
-from confluent_kafka import Consumer, KafkaException
 
 # Configuración de RabbitMQ
 RABBITMQ_HOST = 'localhost'
